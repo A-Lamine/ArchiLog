@@ -99,9 +99,28 @@ namespace ArchiLibrary.Controllers
             return NoContent();
         }
 
+        // GET: api/[range]
+        [HttpGet("orders")]
+        public async Task<ActionResult<IEnumerable<TModel>>> RangeModel([FromQuery] string range)
+        {
+            var tab = range.Split('-');
+            var query = _context.Set<TModel>().Where(x => x.Active && x.ID >= Int32.Parse(tab[0]) && x.ID <= Int32.Parse(tab[1])).Take(50);
+            return await query.ToListAsync();
+        }
+
         private bool ModelExists(int id)
         {
             return _context.Set<TModel>().Any(e => e.ID == id);
         }
     }
 }
+
+/*
+[FromQuery] / AsQueryable<>()
+
+if (!string.IsNullOrWhiteSpace(range))
+{
+    Queryable = query.skipe(10)
+}
+
+var tab = field.Split(',')*/
