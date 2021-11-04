@@ -9,10 +9,9 @@ namespace ArchiAPI.Models
 {
     public class Pizza : ModelBase
     {
-        public int ID  { get; set; }
         [Required]
         public string Name { get; set; }
-        public string Price { get; set; }
+        public decimal Price { get; set; }
         public string Topping { get; set; }
 }
 }
