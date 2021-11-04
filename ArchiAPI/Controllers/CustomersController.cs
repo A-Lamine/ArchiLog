@@ -7,52 +7,43 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ArchiAPI.Data;
 using ArchiAPI.Models;
+using ArchiLibrary.Controllers;
 
 namespace ArchiAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class CustomersController : BaseController<ArchiDbContext, Customer>
     {
-        private readonly ArchiDbContext _context;
-
-        public CustomersController(ArchiDbContext context)
+        public CustomersController(ArchiDbContext c) : base(c)
         {
-            _context = context;
-        }
-
-        // GET: api/Customers
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customers>>> GetCustomers()
-        {
-            return await _context.Customers.Where(x => x.Active == true).ToListAsync();
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customers>> GetCustomers(int id)
+        public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            var customers = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(id);
 
-            if (customers == null)
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return customers;
+            return customer;
         }
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomers(int id, Customers customers)
+        public async Task<IActionResult> PutCustomer(int id, Customer customer)
         {
-            if (id != customers.ID)
+            if (id != customer.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(customers).State = EntityState.Modified;
+            _context.Entry(customer).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +51,7 @@ namespace ArchiAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomersExists(id))
+                if (!CustomerExists(id))
                 {
                     return NotFound();
                 }
@@ -76,36 +67,34 @@ namespace ArchiAPI.Controllers
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customers>> PostCustomers(Customers customers)
+        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
-            _context.Customers.Add(customers);
+            _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomers", new { id = customers.ID }, customers);
+            return CreatedAtAction("GetCustomer", new { id = customer.ID }, customer);
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomers(int id)
+        public async Task<IActionResult> DeleteCustomer(int id)
         {
-            var customers = await _context.Customers.FindAsync(id);
-            if (customers == null)
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
             {
                 return NotFound();
             }
+            //customer.Active = false;
+            //_context.Entry(customer).State = EntityState.Modified;
 
-            // customers.Active = false;
-            //_context.Entry(customers).State = EntityState.Modified;
-            //_context.Entry(customers).State = EntityState.Deleted;
-
-
-            _context.Customers.Remove(customers);
+            //_context.Entry(customer).State = EntityState.Deleted;
+            _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CustomersExists(int id)
+        private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.ID == id);
         }

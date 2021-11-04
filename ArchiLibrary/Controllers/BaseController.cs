@@ -23,7 +23,6 @@ namespace ArchiLibrary.Controllers
         public async Task<ActionResult<IEnumerable<TModel>>> GetAll()
         {
             return await _context.Set<TModel>().Where(x => x.Active == true).ToListAsync();
-            //return await _context.Pizzas.Where(x => x.Active == true).ToListAsync();
         }
 
     }

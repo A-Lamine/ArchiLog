@@ -15,14 +15,9 @@ namespace ArchiAPI.Controllers
     [ApiController]
     public class PizzasController : BaseController<ArchiDbContext, Pizza>
     {
-        //private readonly ArchiDbContext _context;
-
         public PizzasController(ArchiDbContext c) : base(c)
         {
-            
-        //    _context = context;
         }
-
 
         // GET: api/Pizzas/5
         [HttpGet("{id}")]

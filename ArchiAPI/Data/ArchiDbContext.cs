@@ -56,7 +56,7 @@ namespace ArchiAPI.Data
             }
 
         }
-        public DbSet<Customers> Customers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<Pizza> Pizzas { get; set; }
 
     }
