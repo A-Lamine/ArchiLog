@@ -123,7 +123,8 @@ namespace ArchiLibrary.Controllers
             Response.Headers.Add("Content-Range", $"{range}/{difference + 1}");
             Response.Headers.Add("Links", $"{first} , {prev} , {next} , {last}");
 
-            var query = _context.Set<TModel>().Where(x => x.Active).Take(difference);
+           
+            var query = _context.Set<TModel>().Where(x => x.Active).Skip(rangeMin).Take(rangeMax);
 
             return await query.ToListAsync();
         }
