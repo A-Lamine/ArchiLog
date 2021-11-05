@@ -99,12 +99,30 @@ namespace ArchiLibrary.Controllers
             return NoContent();
         }
 
-        // GET: api/[range]
+        // GET: api/[Model]/orders?range=[rangeMin]-[rangeMax]
         [HttpGet("orders")]
-        public async Task<ActionResult<IEnumerable<TModel>>> RangeModel([FromQuery] string range)
+        public async Task<ActionResult<IEnumerable<TModel>>> PaginateModel([FromQuery] string range)
         {
-            var tab = range.Split('-');
-            var query = _context.Set<TModel>().Where(x => x.Active && x.ID >= Int32.Parse(tab[0]) && x.ID <= Int32.Parse(tab[1])).Take(50);
+            string[] rangeParsed = range.Split('-');
+            int rangeMin = Int16.Parse(rangeParsed[0]);
+            int rangeMax = Int16.Parse(rangeParsed[1]);
+
+            var url = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+            var difference = rangeMax - rangeMin;
+            var totalCount = _context.Set<TModel>().Where(x => x.Active).Count();
+
+            var first = $"<{url}?range=0-{difference}>; rel='first'";
+            var prev = $"<{url}?range={(rangeMin - 1) - difference}-{rangeMin - 1}>; rel='prev'";
+            var next = $"<{url}?range={rangeMax + 1}-{rangeMax + 1 + difference}>; rel='next'";
+            var last = $"<{url}?range={totalCount - difference}-{totalCount}>; rel='last'";
+
+            Response.Headers.Add("Accept-Range", $"... {totalCount}");
+            Response.Headers.Add("Content-Range", $"{range}/{totalCount}");
+            Response.Headers.Add("Links", $"{first} , {prev} , {next} , {last}");
+
+            var query = _context.Set<TModel>().Where(x => x.Active).Take(difference);
+
             return await query.ToListAsync();
         }
 
@@ -114,13 +132,3 @@ namespace ArchiLibrary.Controllers
         }
     }
 }
-
-/*
-[FromQuery] / AsQueryable<>()
-
-if (!string.IsNullOrWhiteSpace(range))
-{
-    Queryable = query.skipe(10)
-}
-
-var tab = field.Split(',')*/
