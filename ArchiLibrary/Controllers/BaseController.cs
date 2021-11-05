@@ -108,6 +108,8 @@ namespace ArchiLibrary.Controllers
             int rangeMax = Int16.Parse(rangeParsed[1]);
 
             var url = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+            string a = Request.Path;
+            string[]  NameModel= a.Split('/');
 
             var difference = rangeMax - rangeMin;
             var totalCount = _context.Set<TModel>().Where(x => x.Active).Count();
@@ -117,8 +119,8 @@ namespace ArchiLibrary.Controllers
             var next = $"<{url}?range={rangeMax + 1}-{rangeMax + 1 + difference}>; rel='next'";
             var last = $"<{url}?range={totalCount - difference}-{totalCount}>; rel='last'";
 
-            Response.Headers.Add("Accept-Range", $"... {totalCount}");
-            Response.Headers.Add("Content-Range", $"{range}/{totalCount}");
+            Response.Headers.Add("Accept-Range", $"{NameModel[2]} {totalCount}");
+            Response.Headers.Add("Content-Range", $"{range}/{difference + 1}");
             Response.Headers.Add("Links", $"{first} , {prev} , {next} , {last}");
 
             var query = _context.Set<TModel>().Where(x => x.Active).Take(difference);
