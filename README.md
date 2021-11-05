@@ -15,9 +15,9 @@ We can :
 - With less files 
   
 To Do :  
-- [ ] CRUD (Create, Read, Update, Delete)  
+- [X] CRUD (Create, Read, Update, Delete)  
 - [ ] Un tri  
-- [ ] Une pagination  
+- [X] Une pagination  
 - [ ] Un rendu partiel  
 - [ ] Recherche  
 - [ ] Tests unitaires
