@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -100,7 +101,7 @@ namespace ArchiLibrary.Controllers
         }
 
         // GET: api/[Model]/orders?range=[rangeMin]-[rangeMax]
-        [HttpGet("orders")]
+       [HttpGet("orders")]
         public async Task<ActionResult<IEnumerable<TModel>>> PaginateModel([FromQuery] string range)
         {
             string[] rangeParsed = range.Split('-');
@@ -118,15 +119,37 @@ namespace ArchiLibrary.Controllers
             var prev = $"<{url}?range={(rangeMin - 1) - difference}-{rangeMin - 1}>; rel='prev'";
             var next = $"<{url}?range={rangeMax + 1}-{rangeMax + 1 + difference}>; rel='next'";
             var last = $"<{url}?range={totalCount - difference}-{totalCount}>; rel='last'";
+           
+            var query = _context.Set<TModel>().Where(x => x.Active).Skip(rangeMin).Take(rangeMax);
+            int countresult = query.Count();
 
             Response.Headers.Add("Accept-Range", $"{NameModel[2]} {totalCount}");
-            Response.Headers.Add("Content-Range", $"{range}/{difference + 1}");
+            Response.Headers.Add("Content-Range", $"{range}/{countresult}");
             Response.Headers.Add("Links", $"{first} , {prev} , {next} , {last}");
 
            
-            var query = _context.Set<TModel>().Where(x => x.Active).Skip(rangeMin).Take(rangeMax);
-
             return await query.ToListAsync();
+        }
+        // GET: api/[Model]/Tri
+        [HttpGet("Tri")]
+        public async Task<ActionResult<IEnumerable<TModel>>> TriTModel([FromQuery] string sort)
+        {
+            var source = _context.Set<TModel>().Where(x => x.Active);
+
+
+            var parameter = Expression.Parameter(typeof(TModel), "x");
+            Expression property = Expression.Property(parameter, sort);
+            var lambda = Expression.Lambda(property, parameter);
+
+
+            var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "OrderBy" && x.GetParameters().Length == 2);
+            var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property.Type);
+            var result = orderByGeneric.Invoke(null, new object[] { source, lambda });
+
+            return await ((IOrderedQueryable<TModel>)result).ToListAsync();
+
+
+
         }
 
         private bool ModelExists(int id)
