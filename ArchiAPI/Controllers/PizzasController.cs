@@ -26,17 +26,7 @@ namespace ArchiAPI.Controllers
 
             if (!String.IsNullOrEmpty(search))
             {
-                switch(search)
-                {
-                    case "name":
-                        query = query.Where(x => x.Name.Contains(search));
-                        break;
-                    case "topping":
-                        query = query.Where(x => x.Topping.Contains(search));
-                        break;
-                    default:
-                        break;
-                }
+                query = query.Where(x => x.Name.Contains(search));
             }
 
             return await query.ToListAsync();

@@ -27,23 +27,7 @@ namespace ArchiAPI.Controllers
 
             if (!String.IsNullOrEmpty(search))
             {
-                switch (search)
-                {
-                    case "firstname":
-                        query = query.Where(x => x.Firstname.Contains(search));
-                        break;
-                    case "lastname":
-                        query = query.Where(x => x.Lastname.Contains(search));
-                        break;
-                    case "phone":
-                        query = query.Where(x => x.Phone.Contains(search));
-                        break;
-                    case "email":
-                        query = query.Where(x => x.Email.Contains(search));
-                        break;
-                    default:
-                        break;
-                }
+                query = query.Where(x => x.Firstname.Contains(search));
             }
 
             return await query.ToListAsync();
