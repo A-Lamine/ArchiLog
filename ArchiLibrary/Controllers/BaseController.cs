@@ -189,7 +189,7 @@ namespace ArchiLibrary.Controllers
             var next = $"<{url}?range={rangeMax + 1}-{rangeMax + 1 + difference}>; rel='next'";
             var last = $"<{url}?range={totalCount - difference}-{totalCount}>; rel='last'";
            
-            var query = _context.Set<TModel>().Where(x => x.Active).Skip(rangeMin).Take(rangeMax);
+            var query = _context.Set<TModel>().Where(x => x.Active).Skip(rangeMin).Take(difference);
             int countresult = query.Count();
 
             Response.Headers.Add("Accept-Range", $"{NameModel[2]} {totalCount}");
@@ -199,6 +199,34 @@ namespace ArchiLibrary.Controllers
            
             return await query.ToListAsync();
         }
+
+        /*// GET: api/[Model]/Filtre
+         [HttpGet("Filtre")]
+         public async Task<ActionResult<IEnumerable<TModel>>> FilterTModel([FromQuery] string attr, [FromQuery] string valeur)
+         {
+             var source = _context.Set<TModel>().Where(x => x.Active);
+
+            var parameter = Expression.Parameter(typeof(TModel), "x");
+            Expression property = Expression.Property(parameter, attr);
+            var lambda = Expression.Lambda(property, parameter);
+
+            BinaryExpression binaryExpression =
+            Expression.MakeBinary(
+            ExpressionType.Equal,
+            Expression.Constant(lambda.ToString()),
+            Expression.Constant(valeur));
+
+            Response.Headers.Add("content : ", binaryExpression.ToString());
+
+             /*var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "Where" && x.GetParameters().Length == 2);
+             var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel));
+             var result = orderByGeneric.Invoke(null, new object[] { source, binaryExpression });
+
+             return await ((IOrderedQueryable<TModel>)result).ToListAsync();
+
+            return await source.ToListAsync();
+
+        }*/
         
         private bool ModelExists(int id)
         {
