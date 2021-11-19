@@ -17,7 +17,8 @@ We can :
 To Do :  
 - [X] CRUD (Create, Read, Update, Delete)  
 - [X] Un tri  
-- [X] Une pagination  
+- [X] Une pagination
+- [ ] Un filtre 
 - [X] Un rendu partiel  
 - [ ] Recherche  
 - [ ] Tests unitaires
