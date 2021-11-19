@@ -16,12 +16,12 @@ namespace ArchiLibrary.Controllers
 
         public BaseController(TContext context)
         {
-            _context = context ;
+            _context = context;
         }
 
         // GET: api/[Model]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TModel>>> TriTModel([FromQuery] string asc, string desc)
+        public async Task<ActionResult<IEnumerable<TModel>>> TriModel([FromQuery] string asc, string desc)
         {
             var source = _context.Set<TModel>().Where(x => x.Active);
 
