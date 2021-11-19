@@ -18,12 +18,82 @@ namespace ArchiLibrary.Controllers
         {
             _context = context ;
         }
-       
+
         // GET: api/[Model]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TModel>>> GetAll()
+        public async Task<ActionResult<IEnumerable<TModel>>> TriTModel([FromQuery] string asc, string desc)
         {
-            return await _context.Set<TModel>().Where(x => x.Active == true).ToListAsync();
+            var source = _context.Set<TModel>().Where(x => x.Active);
+
+            if (!String.IsNullOrEmpty(asc))
+            {
+                string[] ascall = asc.Split(',');
+
+                var parameter = Expression.Parameter(typeof(TModel), "x");
+                Expression property = Expression.Property(parameter, ascall[0]);
+                var lambda = Expression.Lambda(property, parameter);
+
+
+                var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "OrderBy" && x.GetParameters().Length == 2);
+                var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property.Type);
+                var result = orderByGeneric.Invoke(null, new object[] { source, lambda });
+
+                foreach (string i in ascall)
+                {
+                    var parameter1 = Expression.Parameter(typeof(TModel), "x");
+                    Expression property1 = Expression.Property(parameter1, i);
+                    var lambda1 = Expression.Lambda(property1, parameter1);
+
+                    orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "ThenBy" && x.GetParameters().Length == 2);
+                    orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property1.Type);
+                    result = orderByGeneric.Invoke(null, new object[] { result, lambda1 });
+                }
+                if (!String.IsNullOrEmpty(desc))
+                {
+                    string[] descall = desc.Split(',');
+
+                    foreach (string a in descall)
+                    {
+                        var parameter1 = Expression.Parameter(typeof(TModel), "x");
+                        Expression property1 = Expression.Property(parameter1, a);
+                        var lambda1 = Expression.Lambda(property1, parameter1);
+
+                        orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "ThenByDescending" && x.GetParameters().Length == 2);
+                        orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property1.Type);
+                        result = orderByGeneric.Invoke(null, new object[] { result, lambda1 });
+                    }
+                }
+                return await ((IOrderedQueryable<TModel>)result).ToListAsync();
+            }
+
+
+
+            if (!String.IsNullOrEmpty(desc))
+            {
+                string[] descall = desc.Split(',');
+
+                var parameter = Expression.Parameter(typeof(TModel), "x");
+                Expression property = Expression.Property(parameter, descall[0]);
+                var lambda = Expression.Lambda(property, parameter);
+
+
+                var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "OrderByDescending" && x.GetParameters().Length == 2);
+                var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property.Type);
+                var result = orderByGeneric.Invoke(null, new object[] { source, lambda });
+
+                foreach (string a in descall)
+                {
+                    var parameter1 = Expression.Parameter(typeof(TModel), "x");
+                    Expression property1 = Expression.Property(parameter1, a);
+                    var lambda1 = Expression.Lambda(property1, parameter1);
+
+                    orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "ThenByDescending" && x.GetParameters().Length == 2);
+                    orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property1.Type);
+                    result = orderByGeneric.Invoke(null, new object[] { result, lambda1 });
+                }
+                return await ((IOrderedQueryable<TModel>)result).ToListAsync();
+            }
+            return await source.ToListAsync();
         }
 
         // GET: api/[Model]/:id
@@ -130,27 +200,9 @@ namespace ArchiLibrary.Controllers
            
             return await query.ToListAsync();
         }
-        // GET: api/[Model]/Tri
-        [HttpGet("Tri")]
-        public async Task<ActionResult<IEnumerable<TModel>>> TriTModel([FromQuery] string sort)
-        {
-            var source = _context.Set<TModel>().Where(x => x.Active);
+        
 
-
-            var parameter = Expression.Parameter(typeof(TModel), "x");
-            Expression property = Expression.Property(parameter, sort);
-            var lambda = Expression.Lambda(property, parameter);
-
-
-            var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "OrderBy" && x.GetParameters().Length == 2);
-            var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property.Type);
-            var result = orderByGeneric.Invoke(null, new object[] { source, lambda });
-
-            return await ((IOrderedQueryable<TModel>)result).ToListAsync();
-
-
-
-        }
+        
 
         private bool ModelExists(int id)
         {
