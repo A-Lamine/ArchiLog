@@ -10,20 +10,20 @@ using Xunit;
 
 namespace ArchiTest
 {
-    public class PostUnitTestController
+    public class PizzaUnitTestController
     {
         private PizzasController PizzaRepository;
         public static DbContextOptions<ArchiDbContext> dbContextOptions;
-        public static string connectionString = "Server=tcp:archilogla.database.windows.net,1433;Initial Catalog=Archilog;Persist Security Info=False;User ID=lamine;Password=Bejaia06.0;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        public static string connectionString = "Server=tcp:ecandotti.database.windows.net,1433;Initial Catalog=archilog;Persist Security Info=False;User ID=superenzo;Password=Superpassword13;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
-        static PostUnitTestController()
+        static PizzaUnitTestController()
         {
             dbContextOptions = new DbContextOptionsBuilder<ArchiDbContext>()
                 .UseSqlServer(connectionString)
                 .Options;
         }
 
-        public PostUnitTestController()
+        public PizzaUnitTestController()
         {
             var context = new ArchiDbContext(dbContextOptions);
             DummyDataDBInitializer db = new DummyDataDBInitializer();
@@ -32,26 +32,26 @@ namespace ArchiTest
             PizzaRepository = new PizzasController(context);
         }
 
-        [Fact]
-        public async void Task_GetPostById_Return_OkResult()
-        {
-            //Arrange
-            var pizzaId = 2;
-
-            //Act
-            var data = await PizzaRepository.GetModelById(pizzaId);
-
-            //Assert
-            Assert.IsType<OkObjectResult>(data);
-        }
-
         #region Get Pizza By Id
 
             [Fact]
-            public async void Task_GetPostById_Return_NotFoundResult()
+            public async void Task_GetPizzaById_Return_OkResult()
             {
                 //Arrange
-                var pizzaId = 3;
+                var pizzaId = 1;
+
+                //Act
+                var data = await PizzaRepository.GetModelById(pizzaId);
+
+                //Assert
+                Assert.IsType<OkObjectResult>(data);
+            }
+
+            [Fact]
+            public async void Task_GetPizzaById_Return_NotFoundResult()
+            {
+                //Arrange
+                var pizzaId = 9999;
 
                 //Act
                 var data = await PizzaRepository.GetModelById(pizzaId);
@@ -61,20 +61,7 @@ namespace ArchiTest
             }
 
             [Fact]
-            public async void Task_GetPostById_Return_BadRequestResult()
-            {
-                //Arrange
-                int pizzaId = 9999;
-
-                //Act
-                var data = await PizzaRepository.GetModelById(pizzaId);
-
-                //Assert
-                Assert.IsType<BadRequestResult>(data);
-            }
-
-            [Fact]
-            public async void Task_GetPostById_MatchResult()
+            public async void Task_GetPizzaById_MatchResult()
             {
                 //Arrange
                 int pizzaId = 1;
@@ -97,7 +84,7 @@ namespace ArchiTest
         #region Get All Pizza 
 
             [Fact]
-            public async void Task_GetPosts_Return_OkResult()
+            public async void Task_GetPizzas_Return_OkResult()
             {
                 //Act  
                 var data = await PizzaRepository.TriModel("", "");
@@ -107,19 +94,7 @@ namespace ArchiTest
             }
 
             [Fact]
-            public void Task_GetPosts_Return_BadRequestResult()
-            {
-                //Act  
-                var data = PizzaRepository.TriModel("", "");
-                data = null;
-
-                if (data != null)
-                    //Assert  
-                    Assert.IsType<BadRequestResult>(data);
-            }
-
-            [Fact]
-            public async void Task_GetPosts_MatchResult()
+            public async void Task_GetPizzas_MatchResult()
             {
                 //Act  
                 var data = await PizzaRepository.TriModel("", "");
@@ -155,19 +130,6 @@ namespace ArchiTest
             }
 
             [Fact]
-            public async void Task_Add_InvalidData_Return_BadRequest()
-            {
-                //Arrange
-                Pizza post = new Pizza() { Name = "45", Price = 11, Topping = "Chevre, Miel" };
-
-                //Act              
-                var data = await PizzaRepository.PostModel(post);
-
-                //Assert  
-                Assert.IsType<BadRequestResult>(data);
-            }
-
-            [Fact]
             public async void Task_Add_ValidData_MatchResult()
             {
                 //Arrange
@@ -189,10 +151,10 @@ namespace ArchiTest
         #region Delete Pizza  
 
             [Fact]
-            public async void Task_Delete_Post_Return_OkResult()
+            public async void Task_Delete_Pizza_Return_OkResult()
             {
                 //Arrange
-                var pizzaId = 2;
+                var pizzaId = 1;
 
                 //Act  
                 var data = await PizzaRepository.DeleteModel(pizzaId);
@@ -202,29 +164,16 @@ namespace ArchiTest
             }
 
             [Fact]
-            public async void Task_Delete_Post_Return_NotFoundResult()
+            public async void Task_Delete_Pizza_Return_NotFoundResult()
             {
                 //Arrange
-                var pizzaId = 5;
+                var pizzaId = 9999;
 
                 //Act  
                 var data = await PizzaRepository.DeleteModel(pizzaId);
 
                 //Assert  
                 Assert.IsType<NotFoundResult>(data);
-            }
-
-            [Fact]
-            public async void Task_Delete_Return_BadRequestResult()
-            {
-                //Arrange
-                int pizzaId = -1;
-
-                //Act  
-                var data = await PizzaRepository.DeleteModel(pizzaId);
-
-                //Assert  
-                Assert.IsType<BadRequestResult>(data);
             }
 
         #endregion
