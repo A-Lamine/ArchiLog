@@ -37,8 +37,9 @@ namespace ArchiAPI.Data
             {
                 item.State = EntityState.Added;
                 if (item.Entity is ModelBase)
-                {
+                {   
                     ((ModelBase)item.Entity).Active = true;
+                    ((ModelBase)item.Entity).createdat = DateTime.Now;
                 }
             }
         }

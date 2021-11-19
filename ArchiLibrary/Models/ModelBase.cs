@@ -10,5 +10,6 @@ namespace ArchiLibrary.Models
     {
         public int ID { get; set; }
         public bool Active { get; set; }
+        public DateTime createdat { get; set; }
     }
 }
