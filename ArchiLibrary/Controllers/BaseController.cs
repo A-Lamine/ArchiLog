@@ -189,7 +189,7 @@ namespace ArchiLibrary.Controllers
             var next = $"<{url}?range={rangeMax + 1}-{rangeMax + 1 + difference}>; rel='next'";
             var last = $"<{url}?range={totalCount - difference}-{totalCount}>; rel='last'";
            
-            var query = _context.Set<TModel>().Where(x => x.Active).Skip(rangeMin).Take(rangeMax);
+            var query = _context.Set<TModel>().Where(x => x.Active).Skip(rangeMin).Take(difference);
             int countresult = query.Count();
 
             Response.Headers.Add("Accept-Range", $"{NameModel[2]} {totalCount}");
@@ -227,7 +227,7 @@ namespace ArchiLibrary.Controllers
             return await source.ToListAsync();
 
         }*/
-
+        
         private bool ModelExists(int id)
         {
             return _context.Set<TModel>().Any(e => e.ID == id);
