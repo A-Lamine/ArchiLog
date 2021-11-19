@@ -100,7 +100,7 @@ namespace ArchiTest
             public async void Task_GetPosts_Return_OkResult()
             {
                 //Act  
-                var data = await PizzaRepository.GetAll();
+                var data = await PizzaRepository.TriModel();
 
                 //Assert  
                 Assert.IsType<OkObjectResult>(data);
@@ -110,7 +110,7 @@ namespace ArchiTest
             public void Task_GetPosts_Return_BadRequestResult()
             {
                 //Act  
-                var data = PizzaRepository.GetAll();
+                var data = PizzaRepository.TriModel();
                 data = null;
 
                 if (data != null)
@@ -122,7 +122,7 @@ namespace ArchiTest
             public async void Task_GetPosts_MatchResult()
             {
                 //Act  
-                var data = await PizzaRepository.GetAll();
+                var data = await PizzaRepository.TriModel();
 
                 //Assert  
                 Assert.IsType<OkObjectResult>(data);
