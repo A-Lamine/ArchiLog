@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ArchiLibrary.Controllers
@@ -201,9 +200,6 @@ namespace ArchiLibrary.Controllers
             return await query.ToListAsync();
         }
         
-
-        
-
         private bool ModelExists(int id)
         {
             return _context.Set<TModel>().Any(e => e.ID == id);
