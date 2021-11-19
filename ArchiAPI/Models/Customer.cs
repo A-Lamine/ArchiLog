@@ -13,6 +13,5 @@ namespace ArchiAPI.Models
         public string Phone { get; set; }
         public string Lastname { get; set; }
         public string Firstname { get; set; }
-
     }
 }

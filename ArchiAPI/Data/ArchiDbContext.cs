@@ -15,7 +15,6 @@ namespace ArchiAPI.Data
         {
         }
 
-
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             ChangeAddedState();
