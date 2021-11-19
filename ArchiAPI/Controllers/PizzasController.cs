@@ -45,5 +45,28 @@ namespace ArchiAPI.Controllers
                 return await _context.Set<Pizza>().Where(x => x.Active == true).ToListAsync();
             }
         }
+
+
+        // GET: api/pizza/search
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Pizza>>> SearchModel([FromQuery] string Name)
+        {
+            //Type t = Pizza.GetType();
+            //PropertyInfo[] props = t.GetProperties();
+            //Dictionary<string, object> dict = new Dictionary<string, object>();
+
+            string sql = $"SELECT * FROM [dbo].[Pizzas] WHERE Name LIKE %${Name}%";
+
+            //foreach (PropertyInfo prp in props)
+            //{
+            //    object value = prp.GetValue(Pizza, new object[] { });
+            //    dict.Add(prp.Name, value);
+            //}
+
+
+            var test = _context.Set<Pizza>().FromSqlRaw(sql);
+
+            return await test.ToListAsync();
+        }
     }
 }
