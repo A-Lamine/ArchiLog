@@ -16,10 +16,12 @@ We can :
   
 To Do :  
 - [X] CRUD (Create, Read, Update, Delete)  
-- [ ] Un tri  
-- [X] Une pagination  
-- [ ] Un rendu partiel  
+- [X] Un tri  
+- [X] Une pagination
+- [ ] Un filtre 
+- [X] Un rendu partiel  
 - [ ] Recherche  
 - [ ] Tests unitaires
 - [ ] CI/CD Gitlab
+- [X] base de données hébergée sur Azure
 - [X] Swagger
