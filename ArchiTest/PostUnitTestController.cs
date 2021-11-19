@@ -14,7 +14,7 @@ namespace ArchiTest
     {
         private PizzasController PizzaRepository;
         public static DbContextOptions<ArchiDbContext> dbContextOptions;
-        public static string connectionString = "Server=tcp:archilogla.database.windows.net,1433;Initial Catalog=archilog;Persist Security Info=False;User ID=lamine;Password=Bejaia06.0;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        public static string connectionString = "Server=tcp:archilogla.database.windows.net,1433;Initial Catalog=Archilog;Persist Security Info=False;User ID=lamine;Password=Bejaia06.0;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
         static PostUnitTestController()
         {
@@ -100,7 +100,7 @@ namespace ArchiTest
             public async void Task_GetPosts_Return_OkResult()
             {
                 //Act  
-                var data = await PizzaRepository.TriModel();
+                var data = await PizzaRepository.TriModel("", "");
 
                 //Assert  
                 Assert.IsType<OkObjectResult>(data);
@@ -110,7 +110,7 @@ namespace ArchiTest
             public void Task_GetPosts_Return_BadRequestResult()
             {
                 //Act  
-                var data = PizzaRepository.TriModel();
+                var data = PizzaRepository.TriModel("", "");
                 data = null;
 
                 if (data != null)
@@ -122,7 +122,7 @@ namespace ArchiTest
             public async void Task_GetPosts_MatchResult()
             {
                 //Act  
-                var data = await PizzaRepository.TriModel();
+                var data = await PizzaRepository.TriModel("", "");
 
                 //Assert  
                 Assert.IsType<OkObjectResult>(data);
