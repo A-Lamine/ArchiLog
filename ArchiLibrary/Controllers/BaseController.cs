@@ -37,7 +37,7 @@ namespace ArchiLibrary.Controllers
                 var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property.Type);
                 var result = orderByGeneric.Invoke(null, new object[] { source, lambda });
 
-                foreach (string i in ascall)
+                foreach (string i in ascall.Skip(1))
                 {
                     var parameter1 = Expression.Parameter(typeof(TModel), "x");
                     Expression property1 = Expression.Property(parameter1, i);
@@ -80,7 +80,7 @@ namespace ArchiLibrary.Controllers
                 var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TModel), property.Type);
                 var result = orderByGeneric.Invoke(null, new object[] { source, lambda });
 
-                foreach (string a in descall)
+                foreach (string a in descall.Skip(1))
                 {
                     var parameter1 = Expression.Parameter(typeof(TModel), "x");
                     Expression property1 = Expression.Property(parameter1, a);
